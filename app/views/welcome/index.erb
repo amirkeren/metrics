@@ -1,0 +1,41 @@
+<div>
+  <h3>Select a driver<h3>
+  <select id="drivers" onchange="submitDriver()">
+    <option disabled selected value> -- Select a driver -- </option>
+    <% get_driver_names.each do |name| %>
+      <option value="<%= name %>"><%= name %></option>
+    <% end %>
+  </select>
+  <h3>Or metric<h3>
+  <select id="metrics" onchange="submitMetric()">>
+    <option disabled selected value> -- Select a metric -- </option>
+    <% get_metric_names.each do |name| %>
+      <option value="<%= name %>"><%= name %></option>
+    <% end %>
+  </select>
+  <br/><br/>
+  <image id="map" src=""/>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+  function submitDriver() {
+    var driver_name = $('#drivers').find(":selected").text();
+    $.post( "/coordinates_by_driver", { name: driver_name }, function(data) {
+      $('#map').attr('src', data);
+    });
+  }
+
+  function submitMetric() {
+    var metric_name = $('#metrics').find(":selected").text();
+    $.ajax({
+      url: '/coordinates_by_metric',
+      type: "POST",
+      data: { name: metric_name },
+      dataType: 'script',
+      success: function(data) {
+        $('#map').attr('src', data);
+      }
+    });
+  }
+</script>
